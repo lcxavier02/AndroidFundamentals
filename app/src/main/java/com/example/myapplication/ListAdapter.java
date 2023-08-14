@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     public void setItems(List<ListElement> items) { mData = items; }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         ImageView iconImage;
         TextView name, city, status;
         CardView cv;
@@ -62,6 +63,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             city = itemView.findViewById(R.id.cityTextView);
             status = itemView.findViewById(R.id.statusTextView);
             cv = itemView.findViewById(R.id.cv);
+            cv.setOnCreateContextMenuListener(this);
         }
 
         void bindData(final ListElement item) {
@@ -75,6 +77,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                     listener.onItemClick(item);
                 }
             });
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            contextMenu.setHeaderTitle("Select one of the options");
+            contextMenu.add(getBindingAdapterPosition(), 101, 0, "Show  Simple Dialog");
+            contextMenu.add(getBindingAdapterPosition(), 102, 1, "Show Alert Dialog");
         }
     }
 
