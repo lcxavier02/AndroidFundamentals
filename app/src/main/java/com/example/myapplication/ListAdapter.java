@@ -6,9 +6,11 @@ import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -18,11 +20,17 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private List<ListElement> mData;
     private LayoutInflater mInflater;
     private Context context;
+    final ListAdapter.OnItemClickListener listener;
 
-    public ListAdapter(List<ListElement> itemList, Context context) {
+    public interface OnItemClickListener {
+         void onItemClick(ListElement item);
+    }
+
+    public ListAdapter(List<ListElement> itemList, Context context, ListAdapter.OnItemClickListener listener) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.mData = itemList;
+        this.listener = listener;
     }
 
     @Override
@@ -30,12 +38,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     @Override
     public ListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.list_element, null);
+        View view = mInflater.from(parent.getContext()).inflate(R.layout.list_element, parent, false);
         return new ListAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ListAdapter.ViewHolder holder, final int position) {
+        holder.cv.setAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_transition));
         holder.bindData(mData.get(position));
     }
 
@@ -44,6 +53,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView iconImage;
         TextView name, city, status;
+        CardView cv;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -51,6 +61,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             name = itemView.findViewById(R.id.nameTextView);
             city = itemView.findViewById(R.id.cityTextView);
             status = itemView.findViewById(R.id.statusTextView);
+            cv = itemView.findViewById(R.id.cv);
         }
 
         void bindData(final ListElement item) {
@@ -58,6 +69,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             name.setText(item.getName());
             city.setText(item.getCity());
             status.setText(item.getStatus());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClick(item);
+                }
+            });
         }
     }
 
