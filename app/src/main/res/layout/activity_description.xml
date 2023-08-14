@@ -46,4 +46,13 @@
         android:textColor="@color/black"
         android:textSize="20sp" />
 
+    <Button
+        android:id="@+id/btnShowToast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/statusDescriptionTextView"
+        android:layout_marginTop="40dp"
+        android:layout_centerHorizontal="true"
+        android:text="Click me!" />
+
 </RelativeLayout>
